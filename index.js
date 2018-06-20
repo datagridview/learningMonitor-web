@@ -16,6 +16,10 @@ var stateUrl = "http://127.0.0.1:8000/api/states/";
 var emotionUrl = 'http://127.0.0.1:8000/api/emotions/';
 var opUrl = "http://127.0.0.1:8000/api/operationtimes/"
 var hbUrl = "http://127.0.0.1:8000/api/heartbeats/";
+
+(function(clipOuterId){
+// 用于第一个数据总览界面，在右边的frame中渲染一个div控件
+
 $("#btnRedirect ").click(function() {
     $("#home,#features,footer,#cover").fadeOut();
     $("#main1,.cover-container").css("display", "none");
@@ -27,16 +31,17 @@ $("#btnRedirect ").click(function() {
     $("#operation").css("display", "none");
     $("#set").css("display", "none");
     $("#tips").css("display", "none");
-
+    // flag_dashboard用于判断有没有呈现过，如果为0，则没有渲染过；为1，则已经渲染过了。
     if (flag_dashboard == 0) {
 
+        // processSet用于获取相关clip的进程数据，返回一个数据集对象
         processSet = (function() {
             var processUrl = "http://127.0.0.1:8000/api/processes/";
             var processOpenNum = 0;
             var processCloseNum = 0;
             var processCloseList = [];
             var processOpenList = [];
-
+            // getPartData()支持对于多页数据进行采集的核心函数，通过迭代来获取多页的数据集，返回option结果数据集。
             function getPartData(url, setName, order) {
                 var options = {};
                 $.ajax({
@@ -54,7 +59,7 @@ $("#btnRedirect ").click(function() {
                 });
                 return options;
             };
-            var options = getPartData(processUrl, '1501倪佳慧', '');
+            var options = getPartData(processUrl, clipOuterId, '');
             var processNum = options.count;
             options.results.forEach(function(result) {
                 if (result.flag == "close") {
@@ -73,7 +78,8 @@ $("#btnRedirect ").click(function() {
                 processCloseList: processCloseList
             }
         })();
-
+        
+        // 相关情绪的数据呈现处理，返回数据集对象
         emotionRelated = (function() {
             var stateList = ['anger', 'disgust', 'fear', 'happiness', 'neutral', 'sadness', 'surprise', 'NoFace'];
             var posiRate;
@@ -84,7 +90,7 @@ $("#btnRedirect ").click(function() {
             var negativeNum = 0;
             var nofaceNum = 0;
 
-
+            // 原理如上
             function getPartData(url, state, setName, order) {
                 var options = {};
                 $.ajax({
@@ -105,7 +111,7 @@ $("#btnRedirect ").click(function() {
             };
 
             stateList.forEach(function(state) {
-                var options = getPartData(emotionUrl, state, '1501倪佳慧', '');
+                var options = getPartData(emotionUrl, state, clipOuterId, '');
                 stateNum += options.count;
                 if (state == "NoFace") {
                     nofaceNum += options.count;
@@ -115,6 +121,8 @@ $("#btnRedirect ").click(function() {
                     positiveNum += options.count;
                 }
             });
+
+            // 计算积极情绪、消极情绪和没有脸出现的占比
             posiRate = (positiveNum * 100 / stateNum).toFixed(2) + "%";
             nofaceRate = (nofaceNum * 100 / stateNum).toFixed(2) + "%";
             negaRate = (negativeNum * 100 / stateNum).toFixed(2) + "%";
@@ -128,10 +136,9 @@ $("#btnRedirect ").click(function() {
                 negaRate: negaRate
             }
         })();
-
+        // 有关操作的数据集的获取，返回一个数据对象
         operationSet = (function() {
-            var operationUrl = "http://127.0.0.1:8000/api/operations/?clip__clip_outer_id=1501倪佳慧"
-
+            var operationUrl = "http://127.0.0.1:8000/api/operations/?clip__clip_outer_id=" + clipOuterId
 
             function getPartData(url) {
                 var options = {};
@@ -159,15 +166,16 @@ $("#btnRedirect ").click(function() {
             }
         })();
 
+        // 返回学习时长，可以直接被使用
         timeLength = (function() {
             var timeLength;
             (function() {
-                var options = getPartData(emotionUrl, '', '1501倪佳慧', 'time');
+                var options = getPartData(emotionUrl, '', clipOuterId, 'time');
                 var firstTime = options.results[0].time;
                 var firstTmpType = new Date(firstTime);
                 var first = firstTmpType.getTime();
 
-                var options = getPartData(emotionUrl, '', '1501倪佳慧', '-time');
+                var options = getPartData(emotionUrl, '', clipOuterId, '-time');
                 var lastTime = options.results[0].time;
                 var lastTmpType = new Date(lastTime);
                 var last = lastTmpType.getTime();
@@ -222,9 +230,9 @@ $("#btnRedirect ").click(function() {
             })();
             return timeLength;
         })();
-
+        // 返回心跳数据，是整体的样本容量
         heartbeatNum = (function() {
-            var heartbeatUrl = "http://127.0.0.1:8000/api/heartbeats/?format=json&search=1501倪佳慧";
+            var heartbeatUrl = "http://127.0.0.1:8000/api/heartbeats/?format=json&search=" + clipOuterId;
             var count;
             var dataList = [];
             var dateList = [];
@@ -248,7 +256,7 @@ $("#btnRedirect ").click(function() {
             var options = getPartData(heartbeatUrl);
             return options.count;
         })();
-
+        // 渲染所有的概览数据
         $("#timeLength").text(timeLength);
         $("#heartbeatNum").text(heartbeatNum);
         $("#emotionNum").text(emotionRelated.stateNum);
@@ -262,12 +270,14 @@ $("#btnRedirect ").click(function() {
         $("#processOpenNum").text(processSet.processOpenNum);
         $("#processCloseNum").text(processSet.processCloseNum);
         $("#username").text("何XX");
-
+        
+        // 归一
         flag_dashboard = 1;
     }
 
 });
 
+// 重新对其进行概览操作时
 $("#dashboardRedirect").click(function(event) {
     (function() {
         event.preventDefault();
@@ -280,10 +290,10 @@ $("#dashboardRedirect").click(function(event) {
         $("#set").css("display", "none");
         // $("#tips").removeClass("alert-warning").remove("alert-dark").addClass("alert-success");
         $("#tips").css("display", "none");
-
     })();
 });
 
+// state数据集操作，渲染echarts图标
 $("#setRedirect").click(function(event) {
     (function() {
         event.preventDefault();
@@ -301,6 +311,7 @@ $("#setRedirect").click(function(event) {
         $("#tips").removeClass("alert-successs").removeClass("alert-warning").addClass("alert-dark").fadeIn();;
     })();
     if (flag_set == 0) {
+        // 初始化图像定位div
         var myChart = echarts.init(document.getElementById('set'));
         myChart.showLoading();
         $("#set").ready(function() {
@@ -331,7 +342,7 @@ $("#setRedirect").click(function(event) {
                 return options;
             };
 
-            var options = getPartData(stateUrl, '1501倪佳慧');
+            var options = getPartData(stateUrl, clipOuterId);
             while (options.next || options.results) {
                 options.results.forEach(function(result) {
                     dataAll.push(result);
@@ -365,6 +376,7 @@ $("#setRedirect").click(function(event) {
             }
             // console.log(emotionList)
 
+            // 加上所有的数据操作数量
             function add(x, y) {
                 return x + y;
             }
@@ -502,7 +514,9 @@ $("#setRedirect").click(function(event) {
     $("#suggestion").html(suggestion);
 });
 
+// 操作数的数据获取呈现和渲染
 $("#operationRedirect").click(function(event) {
+    // 点击渲染出相应待渲染的图层
     (function() {
         event.preventDefault();
         $(".nav-link").removeClass("active");
@@ -611,6 +625,8 @@ $("#operationRedirect").click(function(event) {
         });
         myChart.hideLoading();
     }
+
+    // 进行相应案例的判断状态
     var title = "一般";
     var summerize = "在学习过程中，共计进行" + operationSet.operation_num + "次操作；鼠标操作" + operationSet.mouse_num + "次；键盘操作" + operationSet.keyboard_num + "次；用键盘输入以下内容：<br><code>" + operationSet.content + "</code>";
     summerize += "<br>进行" + processSet.processNum + "次进程操作;其中" + processSet.processCloseNum + "次进程关闭操作，关闭了：";
@@ -621,17 +637,19 @@ $("#operationRedirect").click(function(event) {
     for (var i = 0; i < processSet.processOpenList.length; i++) {
         summerize += processSet.processOpenList[i] + " ";
     }
-
     summerize += "。";
     var suggestion = "";
 
+    // 渲染
     $("#title").text(title);
     $("#summerize").html(summerize);
     $("#suggestion").html(suggestion);
 });
 
-$("#heartbeatRedirect").click(function(event) {
 
+// 心跳数据的渲染
+$("#heartbeatRedirect").click(function(event) {
+    // 同上
     (function() {
         event.preventDefault();
         $(".nav-link").removeClass("active");
@@ -643,10 +661,9 @@ $("#heartbeatRedirect").click(function(event) {
         $("#set").css("display", "none");
         // $("#tips")
         $("#tips").removeClass("alert-warning").removeClass("alert-dark").addClass("alert-success").fadeIn();;
-
-
-
     })();
+
+    // 由于其获取时间比较慢，所以对于这个东西需要提前渲染判断窗格。
     (function() {
         if (flag_heartbeat == 1) {
             var title = "普通";
@@ -658,7 +675,7 @@ $("#heartbeatRedirect").click(function(event) {
             $("#suggestion").html(suggestion);
         }
     })();
-
+    // 获取心跳数据，渲染心跳图表
     if (flag_heartbeat == 0) {
         var myChart = echarts.init(document.getElementById('heartbeat'));
         myChart.showLoading();
@@ -666,10 +683,8 @@ $("#heartbeatRedirect").click(function(event) {
         var dateList = [];
         $("#heartbeat").ready(function() {
 
-            var heartbeatUrl = "http://127.0.0.1:8000/api/heartbeats/?format=json&search=1501倪佳慧";
+            var heartbeatUrl = "http://127.0.0.1:8000/api/heartbeats/?format=json&search="+clipOuterId;
             var count;
-
-
             flag_heartbeat = 1;
 
             function getPartData(url) {
@@ -830,7 +845,6 @@ $("#heartbeatRedirect").click(function(event) {
             $("#title").text(title);
             $("#summerize").html(summerize);
             $("#suggestion").html(suggestion);
-
             myChart.hideLoading();
         });
 
@@ -838,6 +852,7 @@ $("#heartbeatRedirect").click(function(event) {
 
 });
 
+// 感情数据的获取和渲染
 $("#emotionRedirect").click(function(event) {
     (function() {
         event.preventDefault();
@@ -882,7 +897,7 @@ $("#emotionRedirect").click(function(event) {
             };
             var stateTimesDict = {};
             stateList.forEach(function(state) {
-                var options = getPartData(emotionUrl, state, '1501倪佳慧', '');
+                var options = getPartData(emotionUrl, state, clipOuterId, '');
                 stateTimesDict[state] = options.count;
             });
             var option = {
@@ -979,3 +994,4 @@ $("#emotionRedirect").click(function(event) {
     $("#summerize").html(summerize);
     $("#suggestion").html(suggestion);
 });
+})();
