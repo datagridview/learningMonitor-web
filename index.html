@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)https://getbootstrap.com/docs/4.1/examples/cover/ -->
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>学习状态报表</title>
+    <script src="static/js/echarts.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link href="static/css/dashboard.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link type="text/css" rel="stylesheet" href="static/css/cover.css">
+    <link rel="stylesheet" href="static/css/fakeLoader.css">
+</head>
+
+<body>
+    <div>
+        <nav id="new-header" class="fixed-top masthead mb-auto" style="display: none;padding:2em">
+            <a class="masthead-brand header-font" style="font-size:1.5em">学习状态报告</a>
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link" href="">Sign out</a>
+            </nav>
+        </nav>
+
+        <div class="container-fluid ctrl-display" style="display: none">
+            <div class="row">
+                <nav id="sidebar" class="col-md-2 d-none d-md-block bg-light sidebar">
+                    <div class="sidebar-sticky">
+                        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                            <span>当前数据项</span>
+                        </h6>
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" id="dashboardRedirect" href="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>                                    数据总览
+                                    <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="emotionRedirect" href="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>                                    表情相关
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="heartbeatRedirect" href="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>                                    心率相关
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="operationRedirect" href="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>                                    操作相关
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="setRedirect" href="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bar-chart-2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>                                    同轴图表
+                                </a>
+                            </li>
+                            <!-- <li class="nav-item">
+                                <a class="nav-link" href="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>                                    Integrations
+                                </a>
+                            </li> -->
+                        </ul>
+
+                        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                            <span>Saved reports</span>
+                            <a class="d-flex align-items-center text-muted" href="https://getbootstrap.com/docs/4.1/examples/dashboard/#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                            </a>
+                        </h6>
+                        <ul class="nav flex-column mb-2">
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://getbootstrap.com/docs/4.1/examples/dashboard/#">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>                                    Current month
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://getbootstrap.com/docs/4.1/examples/dashboard/#">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>                                    Last quarter
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://getbootstrap.com/docs/4.1/examples/dashboard/#">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>                                    Social engagement
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://getbootstrap.com/docs/4.1/examples/dashboard/#">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>                                    Year-end sale
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <main id="main2" role="main" class="col-md-9 px-4 main-font">
+                    <div id="dashboard" class="px-4" style="height:400px;">
+                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h1 class="h2">数据总览</h1>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 text-center good-height">
+                                <div class="h5 data-show">姓名</div>
+                                <div id="username" class="h2 animate"></div>
+                            </div>
+                            <div class="col-md-6 text-center good-height">
+                                <div class="h5 data-show data-middle-verticle">第<span id="times" class="h2 animate">  6  </span>次&nbsp;&nbsp;<span class="badge badge-success">良好</span></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">学习时长</div>
+                                <div id="timeLength" class="h3 animate"></div>
+                            </div>
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">心跳样本数</div>
+                                <div id="heartbeatNum" class="h3 animate"></div>
+                            </div>
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">表情帧数</div>
+                                <div id="emotionNum" class="h3 animate"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">积极表情占比</div>
+                                <div id="positiveNum" class="h3 animate"></div>
+                            </div>
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">消极表情占比</div>
+                                <div id="negativeNum" class="h3 animate"></div>
+                            </div>
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">不在电脑前占比</div>
+                                <div id="nofaceNum" class="h3 animate"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">总操作数</div>
+                                <div id="operationTimes" class="h3 animate"></div>
+                            </div>
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">鼠标操作数</div>
+                                <div id="mouseNum" class="h3 animate"></div>
+                            </div>
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">键盘操作数</div>
+                                <div id="keyboardNum" class="h3 animate"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">进程操作数</div>
+                                <div id="processNum" class="h3 animate"></div>
+                            </div>
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">进程开启数</div>
+                                <div id="processOpenNum" class="h3 animate"></div>
+                            </div>
+                            <div class="col-md-4 text-center good-height">
+                                <div class="h6 data-show">进程关闭数</div>
+                                <div id="processCloseNum" class="h3 animate"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="heartbeat" style="height:400px;"></div>
+                    <div id="emotion" style="height:400px;"></div>
+                    <div id="operation" style="height:400px;"></div>
+                    <div id="set" style="height:500px;"></div>
+                    <div id="tips" class="alert alert-success report" role="alert">
+                        <h4 id="title" class="alert-heading"></h4>
+                        <p id="summerize"></p>
+                        <hr>
+                        <p id="suggestion" class="mb-0"></p>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- home -->
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <a id="cover" class="masthead-brand header-font" style="font-size:1.5em">学习状态报告</a>
+                <nav class="nav nav-masthead justify-content-center">
+                    <a id="home" class="nav-link active" href="">Home</a>
+                    <a id="features" class="nav-link" href="">Features</a>
+                </nav>
+            </div>
+        </header>
+
+        <main id="main1" role="main" class="inner cover text-center">
+            <p class="lead">您的此次学习状态已经完整的记录下来了，稍等为您呈现。</p>
+            <p class="lead">
+                <p href="" class="btn btn-lg btn-secondary" id="btnRedirect"><i class="access-button">获取报告</i></p>
+            </p>
+        </main>
+
+        <footer class="mastfoot mt-auto text-center">
+            <div class="inner ">
+                <p>Cover template for <a href="">Bootstrap</a>, by <a href="http://blog.heyunfan.me ">@heyunfan</a>.</p>
+            </div>
+        </footer>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="application/x-javascript " src="static/js/jquery-3.3.1.min.js"></script>
+    <script type="application/x-javascript " src="static/js/popper.min.js "></script>
+    <script type="application/x-javascript " src="static/js/bootstrap.min.js "></script>
+
+    <script type="text/javascript" src="index.js"></script>
+
+
+
+</body>
+
+</html>
