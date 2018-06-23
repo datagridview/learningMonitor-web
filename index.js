@@ -994,4 +994,4 @@ $("#emotionRedirect").click(function(event) {
     $("#summerize").html(summerize);
     $("#suggestion").html(suggestion);
 });
-})();
+})('1501倪佳慧');// 此处输入对应clip的clip_outer_id，就是某一次学院的学习状态监测报表。
