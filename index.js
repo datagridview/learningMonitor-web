@@ -16,6 +16,21 @@ var stateUrl = "http://127.0.0.1:8000/api/states/";
 var emotionUrl = 'http://127.0.0.1:8000/api/emotions/';
 var opUrl = "http://127.0.0.1:8000/api/operationtimes/"
 var hbUrl = "http://127.0.0.1:8000/api/heartbeats/";
+var clipOuterId;
+
+
+$("#btnchange").click(function() {
+    event.preventDefault();
+    clipOuterId = $("#ClipOuterId").val();
+    if(clipOuterId==""){
+        alert("请输入ClipOuterId，不得为空");
+    }
+    else{
+        $("#main3").css("display","none");
+        $("#main1").fadeIn();
+    }
+});
+
 
 (function(clipOuterId){
 // 用于第一个数据总览界面，在右边的frame中渲染一个div控件
@@ -994,4 +1009,4 @@ $("#emotionRedirect").click(function(event) {
     $("#summerize").html(summerize);
     $("#suggestion").html(suggestion);
 });
-})('1501倪佳慧');// 此处输入对应clip的clip_outer_id，就是某一次学院的学习状态监测报表。
+})(clipOuterId);// 此处输入对应clip的clip_outer_id，就是某一次学院的学习状态监测报表。
