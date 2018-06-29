@@ -16,12 +16,11 @@ var stateUrl = "http://127.0.0.1:8000/api/states/";
 var emotionUrl = 'http://127.0.0.1:8000/api/emotions/';
 var opUrl = "http://127.0.0.1:8000/api/operationtimes/"
 var hbUrl = "http://127.0.0.1:8000/api/heartbeats/";
-var clipOuterId;
-
+var clipOuterId = "";
 
 $("#btnchange").click(function() {
     event.preventDefault();
-    clipOuterId = $("#ClipOuterId").val();
+    clipOuterId = $("#ClipOuterId").val().toString();
     if(clipOuterId==""){
         alert("请输入ClipOuterId，不得为空");
     }
@@ -32,10 +31,10 @@ $("#btnchange").click(function() {
 });
 
 
-(function(clipOuterId){
 // 用于第一个数据总览界面，在右边的frame中渲染一个div控件
 
 $("#btnRedirect ").click(function() {
+    console.log(clipOuterId + "hello");
     $("#home,#features,footer,#cover").fadeOut();
     $("#main1,.cover-container").css("display", "none");
     $("#new-header").fadeIn();
@@ -177,7 +176,8 @@ $("#btnRedirect ").click(function() {
                 operation_num: option.alloperation_num,
                 mouse_num: option.mouseclicked_num,
                 keyboard_num: option.keypressed_num,
-                content: option.content
+                content: option.content,
+                user: option.owner
             }
         })();
 
@@ -284,7 +284,7 @@ $("#btnRedirect ").click(function() {
         $("#processNum").text(processSet.processNum);
         $("#processOpenNum").text(processSet.processOpenNum);
         $("#processCloseNum").text(processSet.processCloseNum);
-        $("#username").text("何XX");
+        $("#username").text(operationSet.user);
         
         // 归一
         flag_dashboard = 1;
@@ -1009,4 +1009,3 @@ $("#emotionRedirect").click(function(event) {
     $("#summerize").html(summerize);
     $("#suggestion").html(suggestion);
 });
-})(clipOuterId);// 此处输入对应clip的clip_outer_id，就是某一次学院的学习状态监测报表。
