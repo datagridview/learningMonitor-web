@@ -30,7 +30,7 @@ $("#btnchange").click(function() {
     }
 });
 
-
+//try git
 // 用于第一个数据总览界面，在右边的frame中渲染一个div控件
 
 $("#btnRedirect ").click(function() {
