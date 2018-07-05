@@ -30,7 +30,7 @@ $("#btnchange").click(function() {
     }
 });
 
-
+//try git
 // 用于第一个数据总览界面，在右边的frame中渲染一个div控件
 
 $("#btnRedirect ").click(function() {
@@ -838,6 +838,7 @@ $("#heartbeatRedirect").click(function(event) {
                 var underflowHeartbeat;
                 var overflowHeartbeat;
                 var averHeartbeat = (sum / dataList.length).toFixed(2);
+
                 dataList.forEach(function(singleData) {
                     if (singleData > averHeartbeat * 1.1) {
                         overflow += 1;
@@ -847,19 +848,31 @@ $("#heartbeatRedirect").click(function(event) {
                 });
                 overflowHeartbeat = (overflow * 100 / dataList.length).toFixed(2) + "%";
                 underflowHeartbeat = (underflow * 100 / dataList.length).toFixed(2) + "%";
+
+                var suggestion_1 = "处于平均心率[0.9,1.1]区间占比大于70%，心态平稳。";
+                var suggestion_2 = "处于平均心率[0.9,1.1]区间占比小于70%，心态波动较大。";
+                if( (overflow+underflow) / dataList.length <0.3)
+                    suggestion = suggestion_1;
+                else 
+                    suggestion = suggestion_2;
+
                 return {
                     averHeartbeat: averHeartbeat,
                     overflowHeartbeat: overflowHeartbeat,
-                    underflowHeartbeat: underflowHeartbeat
+                    underflowHeartbeat: underflowHeartbeat,
+                    suggestion : suggestion
                 }
             })();
             var title = "普通";
             var summerize = "整体平均心率" + heartbeatObj.averHeartbeat + "；心率过高占比" + heartbeatObj.overflowHeartbeat + "；心率过低占比" + heartbeatObj.underflowHeartbeat + "。";
-            var suggestion = "处于平均心率[0.9,1.1]区间占比大于70%，心态平稳。";
+            
 
             $("#title").text(title);
             $("#summerize").html(summerize);
-            $("#suggestion").html(suggestion);
+            
+            $("#suggestion").html(heartbeatObj.suggestion);
+            
+
             myChart.hideLoading();
         });
 
@@ -939,7 +952,7 @@ $("#emotionRedirect").click(function(event) {
                 series: [{
                     name: '访问来源',
                     type: 'pie',
-                    radius: '55%',
+                    radius: '60%',
                     center: ['50%', '60%'],
                     data: [{
                         value: stateTimesDict.NoFace,
@@ -1003,9 +1016,17 @@ $("#emotionRedirect").click(function(event) {
     }
     var title = "继续保持";
     var summerize = "在" + emotionRelated.stateNum + "帧表情中，积极状态的表情有" + emotionRelated.posiNum + "帧，占比" + emotionRelated.posiRate + "；消极状态的表情有" + emotionRelated.negaNum + "帧，占比" + emotionRelated.negaRate + "；没有识别到人像" + emotionRelated.nofaceNum + "帧，占比" + emotionRelated.nofaceRate + "。<br>积极状态：平静、喜悦、惊讶<br>消极状态：恶心、伤心、生气";
-    var suggestion = "积极情绪占比大于75%，认定为比较认真状态。";
+    var suggestion_1 = "积极情绪占比大于75%，认定为比较积极状态。";
+    var suggestion_2 = "消极情绪占比大于50%，认定为比较消极状态。";
+    var suggestion_3 = "没有识别出人像占比大于40%，认定为比较游离状态。";
 
     $("#title").text(title);
     $("#summerize").html(summerize);
-    $("#suggestion").html(suggestion);
+    
+    if(emotionRelated.nofaceNum/emotionRelated.stateNum >0.4 )
+        $("#suggestion").html(suggestion_3);
+    else if(emotionRelated.posiNum / emotionRelated.stateNum > 0.75)
+        $("#suggestion").html(suggestion_1);
+    else if(emotionRelated.negaNum /emotionRelated.stateNum >0.5 )
+        $("#suggestion").html(suggestion_2);
 });
